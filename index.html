@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>RemoteSentinel - Acceso Remoto sencillo y seguro</title>
+  <meta name="description"
+    content="RemoteSentinel te permite solicitar y conceder acceso remoto de forma segura y rápida. Instálalo en segundos y empieza a trabajar.">
+
+  <!-- OG -->
+  <meta property="og:title" content="RemoteSentinel" />
+  <meta property="og:description" content="Acceso remoto sencillo y seguro." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="assets/screenshot-1.png" />
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { brand: { 400: '#5b95ff', 500: '#2b74ff', 600: '#175ef0', 700: '#134dc3' } },
+          fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', 'Segoe UI', 'Roboto', 'Ubuntu', 'Cantarell', 'Noto Sans', 'Helvetica Neue', 'Arial'] }
+        }
+      }
+    }
+  </script>
+
+  <!-- GSAP -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+
+  <style>
+    /* Aurora oscuro animado */
+    :root {
+      --a1: #1a237e;
+      --a2: #7c3aed;
+      --a3: #0ea5e9;
+      --a4: #2b74ff;
+    }
+
+    body {
+      background: #0b0c10;
+    }
+
+    .aurora {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+      background:
+        radial-gradient(40% 35% at 20% 10%, color-mix(in oklab, var(--a4), white 10%) 0%, transparent 60%),
+        radial-gradient(35% 30% at 85% 20%, color-mix(in oklab, var(--a2), white 8%) 0%, transparent 60%),
+        radial-gradient(45% 45% at 30% 85%, color-mix(in oklab, var(--a1), black 10%) 0%, transparent 70%),
+        radial-gradient(30% 30% at 80% 80%, color-mix(in oklab, var(--a3), black 10%) 0%, transparent 65%),
+        radial-gradient(120% 90% at 50% 110%, #000 0%, #0b0c10 60%);
+      filter: blur(20px) saturate(120%);
+      animation: float 28s linear infinite alternate;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) translateX(0) scale(1);
+      }
+
+      50% {
+        transform: translateY(-10px) translateX(6px) scale(1.02);
+      }
+
+      100% {
+        transform: translateY(5px) translateX(-6px) scale(1);
+      }
+    }
+
+    /* Botón CTA con glow + shine */
+    .btn-cta {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--a4), var(--a2));
+      box-shadow: 0 8px 30px rgba(43, 116, 255, .35);
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .btn-cta:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 40px rgba(43, 116, 255, .5);
+    }
+
+    .btn-cta::before {
+      content: "";
+      position: absolute;
+      inset: -200% -50% auto;
+      height: 200%;
+      background: linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, .35) 20%, transparent 40%);
+      transform: translateX(-120%) rotate(20deg);
+      animation: shine 3s infinite;
+    }
+
+    @keyframes shine {
+      0% {
+        transform: translateX(-120%) rotate(20deg);
+      }
+
+      100% {
+        transform: translateX(120%) rotate(20deg);
+      }
+    }
+
+    /* Icono GitHub pill */
+    .gh-pill {
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .08);
+    }
+
+    .gh-pill:hover {
+      background: rgba(255, 255, 255, .08);
+    }
+
+    /* Tarjetas */
+    .card {
+      backdrop-filter: blur(4px);
+    }
+  </style>
+</head>
+
+<body class="text-neutral-100 font-sans antialiased">
+  <div class="aurora"></div>
+
+  <!-- NAV -->
+  <header class="bg-black text-white">
+  <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+    <a href="#" class="group flex items-center gap-3">
+      <img src="assets/logo.svg" alt="RemoteSentinel" class="h-8 w-8" />
+      <span class="text-lg font-semibold tracking-tight group-hover:text-white transition">RemoteSentinel</span>
+    </a>
+    <nav class="hidden md:flex items-center gap-3 text-sm">
+      <!-- GitHub icono -->
+      <a href="https://github.com/mj-developers/RemoteSentinel" target="_blank" aria-label="GitHub"
+         class="gh-pill flex items-center gap-2 rounded-xl px-3 py-2 text-neutral-300 transition">
+        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor" aria-hidden="true">
+          <path d="M12 .5a12 12 0 0 0-3.79 23.4c.6.11.82-.26.82-.58v-2.02c-3.34.73-4.04-1.41-4.04-1.41-.55-1.4-1.34-1.77-1.34-1.77-1.09-.76.08-.74.08-.74 1.2.09 1.83 1.23 1.83 1.23 1.07 1.83 2.8 1.3 3.49.99.11-.78.42-1.3.77-1.6-2.66-.31-5.46-1.33-5.46-5.9 0-1.3.46-2.36 1.22-3.19-.12-.31-.53-1.56.12-3.25 0 0 1-.32 3.3 1.22a11.4 11.4 0 0 1 6 0c2.3-1.54 3.3-1.22 3.3-1.22.65 1.69.24 2.94.12 3.25.76.83 1.22 1.9 1.22 3.19 0 4.58-2.8 5.58-5.47 5.88.43.37.82 1.1.82 2.22v3.29c0 .32.22.7.83.58A12 12 0 0 0 12 .5Z"/>
+        </svg>
+      </a>
+      <!-- CTA descarga -->
+      <a id="btnDownloadTop" href="#" class="btn-cta rounded-xl px-4 py-2 font-medium text-white">
+        Descargar
+      </a>
+    </nav>
+  </div>
+</header>
+
+
+  <!-- HERO -->
+  <section class="mx-auto grid max-w-6xl items-center gap-10 px-6 py-10 md:grid-cols-2 md:py-16">
+    <div>
+      <h1 class="text-4xl font-extrabold leading-tight md:text-5xl">
+        Acceso remoto <span class="text-brand-400">sencillo</span> y <span class="text-brand-400">seguro</span>
+      </h1>
+      <p class="mt-4 text-lg text-neutral-300">
+        Solicita y concede conexión con presencia en tiempo real y configuración mínima.
+      </p>
+
+      <div class="mt-6 flex flex-wrap items-center gap-4">
+        <a id="btnDownloadMain" href="#"
+          class="btn-cta inline-flex items-center gap-2 rounded-2xl px-5 py-3 text-base font-semibold text-white shadow">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 3a1 1 0 011 1v9.586l2.293-2.293a1 1 0 111.414 1.414l-4.001 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L11 13.586V4a1 1 0 011-1z" />
+            <path d="M5 15a1 1 0 011-1h12a1 1 0 011 1v3a3 3 0 01-3 3H8a3 3 0 01-3-3v-3z" />
+          </svg>
+          Descargar <span id="versionBadge" class="ml-1 rounded bg-white/10 px-2 py-0.5 text-sm font-normal">…</span>
+        </a>
+      </div>
+
+      <p class="mt-3 text-xs text-neutral-400">Windows por ahora.</p>
+    </div>
+
+    <div class="rounded-2xl border border-white/10 bg-white/5 p-3 shadow-2xl">
+      <img src="assets/screenshot-1.png" alt="Captura de RemoteSentinel" class="rounded-xl" />
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features" class="mx-auto max-w-6xl px-6 py-12">
+    <h2 class="text-2xl font-semibold">Características</h2>
+    <div class="mt-6 grid gap-6 md:grid-cols-3">
+      <div class="card rounded-2xl border border-white/10 bg-white/5 p-6">
+        <h3 class="font-semibold">Presencia en tiempo real</h3>
+        <p class="mt-2 text-sm text-neutral-300">Beacon con TTL para saber si un equipo está ocupado o libre.</p>
+      </div>
+      <div class="card rounded-2xl border border-white/10 bg-white/5 p-6">
+        <h3 class="font-semibold">Solicitud de conexión</h3>
+        <p class="mt-2 text-sm text-neutral-300">Pide turno a los usuarios conectados con un clic.</p>
+      </div>
+      <div class="card rounded-2xl border border-white/10 bg-white/5 p-6">
+        <h3 class="font-semibold">Instalación en segundos</h3>
+        <p class="mt-2 text-sm text-neutral-300">Instalador ligero, sin dependencias manuales.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHANGELOG -->
+  <section id="changelog" class="mx-auto max-w-6xl px-6 pb-16">
+    <h2 class="text-2xl font-semibold">Changelog</h2>
+    <ul id="changelogList" class="mt-6 space-y-6"></ul>
+  </section>
+
+  <footer class="bg-black py-4 text-center text-sm text-white">
+  © <span id="y"></span> MJ Devs · RemoteSentinel
+</footer>
+
+
+  <script>
+  const ORG  = "mj-developers";
+  const REPO = "RemoteSentinel";
+
+  const btns  = [document.getElementById("btnDownloadTop"), document.getElementById("btnDownloadMain")].filter(Boolean);
+  const badge = document.getElementById("versionBadge");
+
+  function setPending() {
+    btns.forEach(a => {
+      a.href = "#";
+      a.classList.add("opacity-60","pointer-events-none");
+      a.title = "Buscando instalador…";
+    });
+  }
+  function setLink(url, label) {
+    btns.forEach(a => {
+      a.href = url;
+      a.classList.remove("opacity-60","pointer-events-none");
+      a.removeAttribute("title");
+      // No forzamos download/target para evitar comportamientos raros cross-origin
+    });
+    if (badge) badge.textContent = label || "latest";
+    console.log("✅ Download URL:", url);
+  }
+
+  // --- Semver helpers (acepta vX.Y.Z, X.Y.Z, X.Y, X) ---
+  function parseSemver(tag) {
+    if (!tag) return null;
+    const s = String(tag).trim().replace(/^v/i, "");      // quita prefijo v
+    const m = s.match(/^(\d+)(?:\.(\d+))?(?:\.(\d+))?/);   // 1, 1.2 o 1.2.3
+    if (!m) return null;
+    return [parseInt(m[1]||0,10), parseInt(m[2]||0,10), parseInt(m[3]||0,10)];
+  }
+  function cmpSemverDesc(a, b) {
+    const A = parseSemver(a.tag_name) || [0,0,0];
+    const B = parseSemver(b.tag_name) || [0,0,0];
+    for (let i=0;i<3;i++) {
+      const d = (B[i]||0) - (A[i]||0); // descendente
+      if (d) return d;
+    }
+    return 0;
+  }
+
+  async function getJSON(url) {
+    const r = await fetch(url, { headers: { "Accept":"application/vnd.github+json" } });
+    if (!r.ok) {
+      const t = await r.text().catch(()=> "");
+      throw new Error(`HTTP ${r.status} ${r.statusText} @ ${url}\n${t}`);
+    }
+    return r.json();
+  }
+
+  (async () => {
+    setPending();
+
+    // 1) Trae hasta 100 releases (basta para la mayoría de proyectos)
+    const url = `https://api.github.com/repos/${ORG}/${REPO}/releases?per_page=100`;
+    let releases = [];
+    try {
+      releases = await getJSON(url);
+    } catch (e) {
+      console.error("❌ No se pudo leer /releases:", e);
+      setLink(`https://github.com/${ORG}/${REPO}/releases`, "releases");
+      return;
+    }
+
+    if (!Array.isArray(releases) || releases.length === 0) {
+      setLink(`https://github.com/${ORG}/${REPO}/releases`, "releases");
+      return;
+    }
+
+    // 2) Filtra sólo releases publicados (sin draft ni prerelease) con un tag legible
+    const clean = releases.filter(r => !r.draft && !r.prerelease && r.tag_name);
+    // Si por lo que sea clean queda vacío, usa la lista original
+    const pool = clean.length ? clean : releases;
+
+    // 3) Ordena por semver descendente y coge el más alto
+    pool.sort(cmpSemverDesc);
+    const best = pool[0];
+    console.log("ℹ️ Mejor release por semver:", best?.tag_name, best);
+
+    if (!best) {
+      setLink(`https://github.com/${ORG}/${REPO}/releases`, "releases");
+      return;
+    }
+
+    // 4) Busca el .exe en los assets (si no vinieron, pide best.assets_url)
+    let assets = Array.isArray(best.assets) ? best.assets : [];
+    if (!assets.length && best.assets_url) {
+      try { assets = await getJSON(best.assets_url); } catch {}
+    }
+
+    let exe = (assets || []).find(a => /\.exe$/i.test(a?.name || ""));
+
+    if (exe) {
+      // URL directa al asset versionado, p.e.:
+      // https://github.com/mj-developers/RemoteSentinel/releases/download/v0.0.1/RemoteSentinel-0.0.1.exe
+      const direct = exe.browser_download_url ||
+                     `https://github.com/${ORG}/${REPO}/releases/download/${encodeURIComponent(best.tag_name)}/${encodeURIComponent(exe.name)}`;
+      setLink(direct, best.tag_name);
+      return;
+    }
+
+    // 5) Si por algún motivo no enumeró assets, construye una con el patrón
+    const ver = (best.tag_name || "").replace(/^v/i, "");
+    if (ver) {
+      const guess = `https://github.com/${ORG}/${REPO}/releases/download/${encodeURIComponent(best.tag_name)}/RemoteSentinel-${ver}.exe`;
+      setLink(guess, best.tag_name);
+      return;
+    }
+
+    // 6) Último recurso: manda al HTML del release (debería ser raro)
+    setLink(best.html_url || `https://github.com/${ORG}/${REPO}/releases`, best.tag_name || "releases");
+  })();
+</script>
+
+
+</body>
+
+</html>
